@@ -1,0 +1,122 @@
+import  requests
+
+
+
+
+'Job'
+class Test_new_location():
+    """Создание локации"""
+
+    def __init__(self):
+        self.base_url = 'https://rahulshettyacademy.com'
+        self.key = '?key=qaclick123'
+
+    def tes_creat_new_location(self):
+
+        post_resourse = '/maps/api/place/add/json'
+
+
+        """Метод POST"""
+        print('MЕТОД POST')
+        '''Cоздание новой локацц'''
+
+        post_url = self.base_url + post_resourse + self.key
+        print(post_url)
+        json = {
+
+                "location": {
+
+                "lat": -38.383494,
+
+                "lng": 33.427362
+
+                }, "accuracy": 50,
+
+                "name": "Frontline house",
+
+                "phone_number": "(+91) 983 893 3937",
+
+                "address": "29, side layout, cohen 09",
+
+                "types": [
+
+                 "shoe park",
+
+                "shop"
+
+                 ],
+
+                 "website": "http://google.com",
+
+                "language": "French-IN"
+
+                 }
+        result = requests.post(post_url,json=json)
+        post_info = result.json()
+        print(post_info)
+        assert 200 == result.status_code
+        if 200 == result.status_code:
+            print('Good assert POST status_code')
+        else:
+            print("AssertError")
+        place_id = post_info.get('place_id')
+
+        with open('place_id.txt', 'a' , encoding="utf-8") as file:
+            file.write(place_id + '\n')
+            print(f'place_id сохранен в файл: {place_id}')
+
+    def write_and_delete(self):
+        """Метод DELETE"""
+        print('MЕТОД DELETE')
+        '''Проверка новой локацц'''
+
+        delete_resourse = '/maps/api/place/delete/json'
+
+
+        with open('place_id.txt', 'r', encoding="utf-8") as file:
+            lst = file.readlines()
+            for i in lst[1::2]:
+                i = i.strip()
+                print(i)
+                body_delete = {
+
+                    "place_id": i
+
+                }
+                delete_url = self.base_url+delete_resourse +self.key
+                print(delete_url)
+                result_delete = requests.delete(delete_url,json=body_delete)
+                print(result_delete.status_code)
+                assert result_delete.status_code == 200
+                if result_delete.status_code == 200:
+                    print("Good assert status_code delete")
+
+                else:
+                    print("Assert Error")
+
+
+    def get_file(self):
+        """ПРоверка place_id"""
+        print('ПРОВЕРКА place_id')
+
+        get_resourse = '/maps/api/place/get/json'
+        with open('place_id.txt', 'r', encoding="utf-8") as file:
+            lst = file.readlines()
+            for i in lst:
+                i = i.strip()
+                print(i)
+                get_url = self.base_url + get_resourse + self.key + "&place_id=" + i
+                print(get_url)
+
+                """ПРОВЕРКА на существование локации """
+
+                print('ПРОВЕРКА на существование локации')
+                result_get = requests.get(get_url)
+                info_get = result_get.json()
+                info_get2 = info_get.get("msg")
+                if info_get2 == "Get operation failed, looks like place_id  doesn't exists":
+                    pass
+                else:
+                    with open('place_id_2.txt', 'a', encoding="utf-8") as file:
+                        file.write(i + '\n')
+                        print(f'place_id сохранен в файл: {i}')
