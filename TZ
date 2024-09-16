@@ -1,0 +1,46 @@
+import requests
+
+class Test_New():
+
+    def test_poehal(self):
+        url = 'https://jsonplaceholder.typicode.com/users'
+
+        print(url)
+        result = requests.get(url)
+
+
+        assert result.status_code == 200
+        if result.status_code == 200:
+            print("Статус код :", result.status_code)
+        else:
+            print("Сбой")
+        result.encoding = "utf-8"
+        # print(result.text)
+        # print(result.json())
+
+        for i in result.json():
+            print(i)
+
+            print(f'Пользователь № {id}')
+
+            name = i.get('name')
+            assert name != ''
+            print('Good assert name')
+            username = i.get('username')
+            assert username != ''
+            print('Good assert username')
+            email = i.get('email')
+            assert email != ''
+            print('Good assert email')
+
+            if '@' in email:
+                print('@ - присутствует в email')
+            else:
+                print('@ - Отсутствует в Email')
+
+            print(f"id = {id}: name = {name}: username = {username}: email = {email}: ")
+
+
+
+a=Test_New()
+a.test_poehal()
