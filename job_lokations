@@ -3,7 +3,7 @@ import  requests
 
 
 
-'Job'
+
 class Test_new_location():
     """Создание локации"""
 
